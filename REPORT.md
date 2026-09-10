@@ -1,10 +1,10 @@
 # Design Report
 
-Short design write-up for the computer-use automation system. Sections match the take-home brief exactly. Bodies fill in as implementation deepens beyond Phase 1.
+Short design write-up for the computer-use automation system. Sections match the take-home brief exactly. Bodies fill in as implementation deepens.
 
 ## 1. Architecture
 
-_TBD — single-process modular TypeScript library + CLI; seams for surface, policy, discovery, artifact, replay, HITL, evidence (see `AGENTS.md` §8 and `PLAN.md`)._
+_TBD — single-process modular TypeScript library + CLI; seams for surface, policy, discovery, artifact, replay, HITL, evidence (see `AGENTS.md` §8)._
 
 ## 2. Artifact schema
 
@@ -16,16 +16,22 @@ _TBD — deterministic replay without LLM decisions; business outcomes vs recove
 
 ## 4. Heterogeneity & multi-tenant
 
-_TBD — `SurfaceDriver` adapter seam for web / legacy web / desktop; `appFamily` + overlays for cross-tenant reuse (design-depth, build-thin)._
+**Surface seam (implemented for web):** `SurfaceDriver` speaks abstract `Observation`, `ActionIntent`, and `MultiStrategyLocator` only. `PlaywrightWebDriver` is one adapter; artifacts never import Playwright types.
+
+**Extension path:**
+- `LegacyWebDriver` (future) — same contracts; adds frameset/iframe traversal helpers and table-cell semantic strategies while still emitting `a11y` / `label` / `attribute` / `structural` locator tiers.
+- `DesktopA11yDriver` (future) — OS accessibility tree → same `Observation` / `ActionIntent`; locators prefer role+name (tier 1) which ports cleanly from web a11y.
+
+**Multi-tenant (design, not built):** capabilities will carry `appFamily` + optional overlays so the same recorded flow can specialize locators/recoveries per institution without re-recording. Drift → structured failure / HITL, not silent LLM wandering.
 
 ## 5. Escalation & handoff
 
-_TBD — detect stuck; `InterventionRequest`; same live session control transfer; `ControlOwner` state machine (`src/hitl`)._
+_Partial — `PlaywrightWebDriver` owns `automation | human | transferring` and keeps the same browser context across `pauseForHuman` / `resumeFromHuman`. Full InterventionRequest routing + operator mock lands in Phase 9._
 
 ## 6. Safety
 
-_TBD — allowlist origins/actions; risk classes fail-closed for irreversible actions; redaction in logger/artifacts (`src/policy`, `src/shared/logger.ts`)._
+_TBD — allowlist origins/actions; risk classes fail-closed for irreversible actions; redaction in logger/artifacts. Phase 3 plugs `beforeAct` on the surface driver._
 
 ## 7. Cuts
 
-_Phase 1 scaffolding only. Intentional stubs: discovery, replay, HITL, policy enforcement, full demo-core UI, real evidence bundles. Next: Phase 11 demo-core flows, then Phase 2 SurfaceDriver + Phase 3 policy (see `PLAN.md` execution order)._
+_Done: Phase 1 scaffold, Phase 11 demo-core, Phase 2 SurfaceDriver (web). Still stubbed: policy enforcement, discovery agent, replay engine, full HITL operator path, real evidence bundles for submission. Next: Phase 3 policy._

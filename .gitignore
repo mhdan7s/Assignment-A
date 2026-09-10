@@ -72,6 +72,11 @@ $RECYCLE.BIN/
 assignment_a_extracted.txt
 *.tmp.pdf
 
+# Internal planning notes (not assessment deliverables)
+PLAN.md
+PHASE_0_1_IMPLEMENTATION.md
+PHASE_*_IMPLEMENTATION.md
+
 # TypeScript / ESLint caches
 .eslintcache
 

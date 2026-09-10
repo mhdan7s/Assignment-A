@@ -2,7 +2,7 @@
 
 This file is the **always-on contract** for any human or AI agent working in this repository. It encodes the interface.ai take-home brief (*Computer-Use Automation System*), the locked engineering decisions, and the non-negotiable product/security/scalability rules. If a local convenience conflicts with this file, **this file wins** unless `REPORT.md` is updated with an explicit decision change.
 
-**Related docs:** `PLAN.md` (phased build plan), `README.md` (how to run), `REPORT.md` (design rationale), `Assignment A - Computer-Use Automation System.pdf` (original brief).
+**Related docs:** `README.md` (how to run), `REPORT.md` (design rationale), `apps/demo-core/README.md` (proxy target), assignment PDF (original brief).
 
 ---
 
