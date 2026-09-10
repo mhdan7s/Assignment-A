@@ -1,0 +1,100 @@
+# Dependencies & build
+node_modules/
+dist/
+build/
+out/
+coverage/
+*.tsbuildinfo
+.turbo/
+.cache/
+.parcel-cache/
+.next/
+.vite/
+
+# Package manager noise
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.bak
+
+# Environment & secrets (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+service-account*.json
+
+# Logs & local runtime
+logs/
+*.log
+*.log.*
+tmp/
+temp/
+.tmp/
+
+# Playwright / browsers / test artifacts (local)
+/playwright/.cache/
+/playwright-report/
+/test-results/
+/blob-report/
+/test-results*/
+**/test-results/
+**/playwright-report/
+**/blob-report/
+.auth/
+
+# IDE / editor
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+*.swp
+*.swo
+*~
+
+# OS junk
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Local agent / Cursor scratch (non-essential)
+.cursor/plans/
+.cursor/*.log
+*.local.md
+
+# Optional local PDF extraction / scratch notes
+assignment_a_extracted.txt
+*.tmp.pdf
+
+# TypeScript / ESLint caches
+.eslintcache
+
+# Evidence: keep submission bundles, ignore oversized local scratch if any
+evidence/**/trace-raw/
+evidence/**/*.tmp
+evidence/**/chrome-profile/
+
+# Capabilities drafts that are WIP (optional local only)
+capabilities/_drafts/
+capabilities/**/*.local.json
+
+# Demo-core local data overrides
+apps/demo-core/.data/
+apps/demo-core/node_modules/
+
+# Compiled native / binary dumps
+*.node
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Sourcemaps in publish output (if emitted locally)
+*.map
+!src/**/*.map

@@ -1,0 +1,44 @@
+{
+  "name": "computer-use-automation",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Computer-use automation system: LLM discovery → capability artifact → deterministic replay",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "cua": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "cua": "tsx src/cli/index.ts",
+    "dev": "tsx src/cli/index.ts",
+    "start": "node dist/cli/index.js",
+    "discover": "tsx src/cli/index.ts discover",
+    "replay": "tsx src/cli/index.ts replay",
+    "hitl:mock": "tsx src/cli/index.ts hitl-mock",
+    "demo:core": "tsx apps/demo-core/server.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "commander": "^13.1.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "pino": "^9.6.0",
+    "playwright": "^1.52.0",
+    "zod": "^3.24.4",
+    "zod-to-json-schema": "^3.24.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.3",
+    "pino-pretty": "^13.0.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
+  }
+}
