@@ -19,6 +19,7 @@
     "discover": "tsx src/cli/index.ts discover",
     "replay": "tsx src/cli/index.ts replay",
     "hitl:mock": "tsx src/cli/index.ts hitl-mock",
+    "hitl:demo": "tsx src/cli/index.ts hitl-mock --headed",
     "demo:core": "tsx apps/demo-core/server.ts",
     "test": "vitest run",
     "test:watch": "vitest",

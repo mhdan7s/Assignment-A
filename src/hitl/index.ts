@@ -1,30 +1,16 @@
-import { notImplemented } from "../shared/notImplemented.js";
-
 /**
  * Human-in-the-loop control transfer — PLAN Phase 9 / AGENTS.md §4.6, §11.
- * Same live session only; operator UI may be mocked.
+ * Same live session only; operator UI is a minimal mock signal surface.
  */
 
-export enum ControlOwner {
-  Automation = "automation",
-  Human = "human",
-  Transferring = "transferring",
-}
+export type {
+  ControlOwner,
+  HitlResolveSignal,
+  HumanActionRecord,
+  InterventionReason,
+  InterventionRequest,
+} from "./types.js";
 
-export type InterventionRequest = {
-  id: string;
-  runId: string;
-  sessionId: string;
-  reason: "stuck_discovery" | "unrecoverable_replay" | "risky_action" | "policy";
-  stepId?: string;
-  message: string;
-  createdAt: string;
-};
-
-export async function requestIntervention(
-  _req: Omit<InterventionRequest, "id" | "createdAt">,
-): Promise<InterventionRequest> {
-  return notImplemented("hitl.requestIntervention");
-}
-
-export { notImplemented };
+export { HitlController, type HitlControllerOptions } from "./controller.js";
+export { startOperatorServer, type OperatorServer } from "./operatorServer.js";
+export { runHitlDemo, type HitlDemoResult } from "./demo.js";

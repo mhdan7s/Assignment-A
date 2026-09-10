@@ -14,7 +14,7 @@ Single-process TypeScript library + CLI. Seams:
 | `agent` + `llm` | Gemini discovery loop (LLM only here) |
 | `replay` + `errors` | Deterministic executor + business/recoverable/hard taxonomy |
 | `evidence` | `/evidence/<runId>/` bundles |
-| `hitl` | Ownership types; full operator handoff still thin (Phase 9) |
+| `hitl` | Same-session HITL controller + mock operator console (`:4174`) |
 | `apps/demo-core` | Hostile local bank proxy |
 
 **Trade-off:** one process + clear modules over premature queues/microservices. Queues can wrap the CLI later without rewriting domain types.
@@ -53,7 +53,18 @@ Web adapter implemented. `LegacyWebDriver` / `DesktopA11yDriver` would implement
 
 ## 5. Escalation & handoff
 
-Surface ownership `automation | human | transferring` with same Playwright session (`pauseForHuman` / `resumeFromHuman`). Full InterventionRequest routing + mock operator UI still Phase 9. Policy `DENY_RISK` is the current fail-closed stand-in for irreversible steps.
+**Control owner state machine:** `automation → transferring → human → transferring → automation` (or abort).
+
+**Mechanism (real, minimal UI):**
+1. `HitlController.escalate` builds an `InterventionRequest` (reason, goal, step, observation, screenshot).
+2. `PlaywrightWebDriver.pauseForHuman()` — **same** `sessionId` / browser context stays alive; automation acts are blocked.
+3. Mock operator console (`startOperatorServer`, default `http://127.0.0.1:4174`) shows context + screenshot and **Resume / Abort** (also `/api/resume` for tests).
+4. Human uses the **live headed browser** for manual steps; best-effort click/key/nav recording via page bindings.
+5. Resume → `resumeFromHuman()` → automation continues on the identical session.
+
+Not in scope: full co-browse/WebRTC operator product. The seam (pause / cede / resume / ownership) is real.
+
+Demo: `npm run hitl:demo` (or `hitl-mock --auto-resume-ms=500` for CI).
 
 ## 6. Safety
 
@@ -61,6 +72,6 @@ Surface ownership `automation | human | transferring` with same Playwright sessi
 
 ## 7. Cuts
 
-**Done:** demo-core, SurfaceDriver, policy, artifact schema, golden capability, deterministic replay + outcomes, evidence writer, Gemini discovery implementation, CI.
+**Done:** demo-core, SurfaceDriver, policy, artifact schema, golden capability, deterministic replay + outcomes, evidence writer, Gemini discovery, HITL same-session handoff + mock operator UI, CI.
 
-**Thin / next:** HITL operator mock (Phase 9); live discovery evidence under `/evidence/` still needs a real `GEMINI_API_KEY` run; password-field screenshot masking; capability catalog HTTP API (stretch).
+**Thin / next:** live discovery evidence under `/evidence/` still needs a real `GEMINI_API_KEY` run; password-field screenshot masking; capability catalog HTTP API (stretch).

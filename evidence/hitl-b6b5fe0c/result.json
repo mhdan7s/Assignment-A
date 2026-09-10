@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "sessionId": "8ae035c6-a238-45ff-9ec4-82be0fc7da5f",
+  "sessionIdAfterResume": "8ae035c6-a238-45ff-9ec4-82be0fc7da5f",
+  "sameSession": true,
+  "intervention": {
+    "id": "int_69c8cbfc",
+    "runId": "hitl-b6b5fe0c",
+    "sessionId": "8ae035c6-a238-45ff-9ec4-82be0fc7da5f",
+    "reason": "stuck_discovery",
+    "capabilityOrGoal": "HITL demo: continue staff login after human assist",
+    "observationSummary": "URL: http://127.0.0.1:4173/login\nTitle: Login\n- text: Northlake CU — Core Servicing Core Banking Console\n- heading \"Staff login\" [level=1]\n- paragraph: Synthetic teller console. Use demo credentials from the README.\n- form \"Login form\":\n  - text: Username\n  - textbox \"Username\"\n  - text: Password\n  - textbox \"Password\"\n  - button \"Sign in\"\n- text: demo-core · synthetic data only · no test IDs",
+    "instructionsForHuman": "Use the live browser window (same session). Optionally click around, then press Resume so automation can type credentials.",
+    "createdAt": "2026-09-10T06:56:06.132Z",
+    "status": "resumed",
+    "humanActions": [
+      {
+        "at": "2026-09-10T06:56:07.031Z",
+        "kind": "click",
+        "detail": "Sign in"
+      }
+    ],
+    "stepId": "before_credentials",
+    "screenshotRef": "evidence\\hitl-b6b5fe0c\\screenshots\\****6009-hitl-stuck_discovery.png",
+    "resolvedAt": "2026-09-10T06:56:06.858Z",
+    "resolveNote": "auto-resume"
+  },
+  "evidenceDir": "evidence\\hitl-b6b5fe0c",
+  "operatorUrl": "http://127.0.0.1:4317/",
+  "finalUrl": "http://127.0.0.1:4173/home",
+  "message": "HITL handoff completed; automation finished login on same session"
+}

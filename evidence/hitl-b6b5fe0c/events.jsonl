@@ -1,0 +1,6 @@
+{"type":"demo_nav_login","sessionId":"8ae035c6-a238-45ff-9ec4-82be0fc7da5f","ts":"2026-09-10T06:56:05.921Z","runId":"hitl-b6b5fe0c"}
+{"type":"hitl_escalate","interventionId":"int_69c8cbfc","sessionId":"8ae035c6-a238-45ff-9ec4-82be0fc7da5f","reason":"stuck_discovery","owner":"transferring","ts":"2026-09-10T06:56:06.132Z","runId":"hitl-b6b5fe0c"}
+{"type":"hitl_owner","owner":"human","sessionId":"8ae035c6-a238-45ff-9ec4-82be0fc7da5f","ts":"2026-09-10T06:56:06.134Z","runId":"hitl-b6b5fe0c"}
+{"type":"hitl_resume","interventionId":"int_69c8cbfc","sessionId":"8ae035c6-a238-45ff-9ec4-82be0fc7da5f","owner":"automation","note":"auto-resume","humanActionCount":0,"ts":"2026-09-10T06:56:06.858Z","runId":"hitl-b6b5fe0c"}
+{"type":"hitl_human_action","at":"2026-09-10T06:56:07.031Z","kind":"click","detail":"Sign in","ts":"2026-09-10T06:56:07.031Z","runId":"hitl-b6b5fe0c"}
+{"type":"demo_complete","finalUrl":"http://127.0.0.1:4173/home","sameSession":true,"ts":"2026-09-10T06:56:07.092Z","runId":"hitl-b6b5fe0c"}

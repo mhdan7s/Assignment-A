@@ -43,7 +43,8 @@ Set `GEMINI_API_KEY` for discovery. `DEMO_CORE_PASSWORD=demo-pass` is the synthe
 | `npm run demo:core` | Hostile bank proxy on `:4173` |
 | `npm run replay` | Deterministic capability replay (no LLM) |
 | `npm run discover` | Gemini discovery → artifact + evidence |
-| `npm run hitl:mock` | HITL stub (Phase 9) |
+| `npm run hitl:mock` | HITL demo (use `--headed` or `--auto-resume-ms`) |
+| `npm run hitl:demo` | Headed HITL demo alias |
 | `npm run typecheck` / `build` / `test` / `ci` | Quality gates |
 
 ## Demo path
@@ -62,6 +63,12 @@ npx tsx src/cli/index.ts replay --artifact=capabilities/lookup-savings/1.0.0.jso
 
 # live discovery (requires GEMINI_API_KEY)
 npx tsx src/cli/index.ts discover --goal="Look up member 12345 and read savings balance" --target=http://127.0.0.1:4173/login
+
+# HITL same-session handoff (headed browser + operator UI on :4174)
+npx tsx src/cli/index.ts hitl-mock --headed
+
+# CI-style auto-resume (no human click)
+npx tsx src/cli/index.ts hitl-mock --headless --auto-resume-ms=500 --operator-port=4174
 ```
 
 Login for manual browsing: `teller` / `demo-pass`.
@@ -88,5 +95,5 @@ npx tsx src/cli/index.ts replay --artifact=capabilities/lookup-savings/1.0.0.jso
 | Deterministic replay + NOT_FOUND outcome | **Done** |
 | Evidence writer | **Done** |
 | Gemini discovery loop | **Implemented** (needs API key for live evidence) |
-| HITL operator mock | **Stub** |
+| HITL same-session + mock operator UI | **Done** |
 | Submission `/evidence/` from a real discovery run | **Pending your API key run** |

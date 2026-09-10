@@ -23,6 +23,7 @@ import type {
   SurfaceSessionOwner,
   WaitSpec,
 } from "./types.js";
+import type { HumanActionRecord } from "../hitl/types.js";
 
 export type PlaywrightWebDriverOptions = {
   headless?: boolean;
@@ -360,6 +361,68 @@ export class PlaywrightWebDriver implements SurfaceDriver {
     this.ownerState = "transferring";
     this.ownerState = "automation";
     logger.info({ sessionId: this.sessionId }, "surface resumed by automation");
+  }
+
+  /**
+   * Best-effort capture of human interactions on the live page while owner=human.
+   * Not a full co-browse recorder — clicks/keys/nav only.
+   */
+  async beginHumanActionCapture(
+    onAction: (action: HumanActionRecord) => void,
+  ): Promise<() => void> {
+    const page = this.getPage();
+    const onNav = (frame: { url: () => string }) => {
+      if (frame === page.mainFrame()) {
+        onAction({
+          at: new Date().toISOString(),
+          kind: "navigation",
+          detail: frame.url(),
+        });
+      }
+    };
+    page.on("framenavigated", onNav);
+
+    await page.exposeBinding("__cuaHitlRecord", (_source, kind: string, detail: string) => {
+      if (kind === "click" || kind === "keydown") {
+        onAction({
+          at: new Date().toISOString(),
+          kind,
+          detail: String(detail),
+        });
+      }
+    }).catch(() => {
+      // Binding may already exist if escalate called twice on same page
+    });
+
+    await page.evaluate(`(() => {
+      const w = window;
+      if (w.__cuaHitlInstalled) return;
+      w.__cuaHitlInstalled = true;
+      document.addEventListener(
+        "click",
+        (ev) => {
+          const t = ev.target;
+          const label =
+            (t && t.getAttribute && t.getAttribute("aria-label")) ||
+            (t && t.textContent && t.textContent.trim().slice(0, 80)) ||
+            (t && t.tagName) ||
+            "unknown";
+          if (w.__cuaHitlRecord) w.__cuaHitlRecord("click", label);
+        },
+        true,
+      );
+      document.addEventListener(
+        "keydown",
+        (ev) => {
+          if (w.__cuaHitlRecord) w.__cuaHitlRecord("keydown", ev.key);
+        },
+        true,
+      );
+    })()`);
+
+    return () => {
+      page.off("framenavigated", onNav);
+    };
   }
 
   async dispose(): Promise<void> {

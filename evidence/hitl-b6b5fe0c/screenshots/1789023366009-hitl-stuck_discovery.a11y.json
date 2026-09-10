@@ -1,0 +1,10 @@
+{
+  "reason": "hitl-stuck_discovery",
+  "url": "http://127.0.0.1:4173/login",
+  "title": "Login",
+  "a11yTree": {
+    "role": "RootWebArea",
+    "name": "Login"
+  },
+  "ariaSnapshot": "- text: Northlake CU — Core Servicing Core Banking Console\n- heading \"Staff login\" [level=1]\n- paragraph: Synthetic teller console. Use demo credentials from the README.\n- form \"Login form\":\n  - text: Username\n  - textbox \"Username\"\n  - text: Password\n  - textbox \"Password\"\n  - button \"Sign in\"\n- text: demo-core · synthetic data only · no test IDs"
+}
