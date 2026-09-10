@@ -1,19 +1,26 @@
-import { notImplemented } from "../shared/notImplemented.js";
-
 /**
  * Policy allowlist / risk classes / redaction — PLAN Phase 3 / AGENTS.md §4.4, §6.
  */
-export type PolicyDecision =
-  | { allow: true }
-  | { allow: false; reason: string; code: "DENY_ORIGIN" | "DENY_ACTION" | "DENY_RISK" };
+export type {
+  PolicyConfig,
+  PolicyContext,
+  PolicyDecision,
+  PolicyDenialCode,
+} from "./types.js";
 
-export type PolicyEngine = {
-  checkNavigation(url: string): PolicyDecision;
-  checkAction(actionType: string): PolicyDecision;
-};
+export {
+  PolicyConfigSchema,
+  PolicyDenialCodeSchema,
+  PolicyViolationError,
+} from "./types.js";
 
-export function createPolicyEngine(): PolicyEngine {
-  return notImplemented("policy.createPolicyEngine");
-}
-
-export { notImplemented };
+export { createBeforeActGuard, createPolicyEngine, type PolicyEngine } from "./engine.js";
+export { demoCorePolicyConfig } from "./defaults.js";
+export {
+  REDACTED,
+  isSensitiveKey,
+  maskAccountLike,
+  redactDeep,
+  redactForArtifact,
+  redactString,
+} from "./redact.js";

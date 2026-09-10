@@ -9,16 +9,24 @@ export type BusinessOutcomeCode =
   | "PERMISSION_DENIED"
   | string;
 
+export type EvidencePointers = {
+  dir?: string;
+  screenshotPath?: string;
+  a11yPath?: string;
+};
+
 export type ReplayResult =
   | {
       status: "success";
       outputs: Record<string, unknown>;
+      evidence?: EvidencePointers;
     }
   | {
       status: "business_outcome";
       code: BusinessOutcomeCode;
       message: string;
       outputs?: Record<string, unknown>;
+      evidence?: EvidencePointers;
     }
   | {
       status: "failed";
@@ -28,9 +36,11 @@ export type ReplayResult =
         observed: string;
         category: "hard_failure" | "policy_violation" | "timeout" | string;
       };
+      evidence?: EvidencePointers;
     }
   | {
       status: "needs_human";
       interventionId: string;
       reason: string;
+      evidence?: EvidencePointers;
     };

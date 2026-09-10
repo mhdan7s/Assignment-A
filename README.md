@@ -19,103 +19,74 @@ goal + target
 
 ## Prerequisites
 
-- Node.js **20+** (this project is **TypeScript/Node only** — no Python runtime or `venv` is required)
+- Node.js **20+** (TypeScript/Node only — no Python `venv` required)
 - Git
-- (Later) Gemini API key for live discovery; Playwright browsers for computer-use
+- Gemini API key for **live discovery** only
+- Playwright Chromium for surface/replay/discovery
 
-> If you ever add optional Python tooling locally, keep it in `.venv/` / `venv/` (already gitignored). Do not commit virtualenvs.
+> Local Python envs (if any) belong in `.venv/` (gitignored).
 
 ## Setup
 
 ```bash
 npm install
 copy .env.example .env   # Windows
-# cp .env.example .env   # macOS/Linux
-```
-
-Fill `GEMINI_API_KEY` only when you run live discovery (not required for stubs / demo-core).
-
-Playwright browsers (needed from Phase 2+):
-
-```bash
 npx playwright install chromium
 ```
+
+Set `GEMINI_API_KEY` for discovery. `DEMO_CORE_PASSWORD=demo-pass` is the synthetic teller password used by replay `$env` bindings.
 
 ## Scripts
 
 | Script | Purpose |
 |---|---|
-| `npm run typecheck` | Strict TypeScript check |
-| `npm run build` | Emit `dist/` |
-| `npm run demo:core` | Local hostile bank proxy on `:4173` |
-| `npm run discover` | Discovery CLI (stub → exit 2 until Phase 4) |
-| `npm run replay` | Replay CLI (stub → exit 2 until Phase 6) |
-| `npm run hitl:mock` | HITL mock CLI (stub → exit 2 until Phase 9) |
-| `npm test` | Smoke + locator + surface↔demo-core tests |
-| `npm run ci` | Local parity with GitHub Actions (`typecheck` + `build` + `test`) |
+| `npm run demo:core` | Hostile bank proxy on `:4173` |
+| `npm run replay` | Deterministic capability replay (no LLM) |
+| `npm run discover` | Gemini discovery → artifact + evidence |
+| `npm run hitl:mock` | HITL stub (Phase 9) |
+| `npm run typecheck` / `build` / `test` / `ci` | Quality gates |
 
-## CI / CD (GitHub Actions)
+## Demo path
 
-Workflow: [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)
-
-Runs on pushes and PRs to `main` (and manual `workflow_dispatch`):
-
-1. `npm ci`
-2. Playwright Chromium install
-3. `npm run typecheck`
-4. `npm run build`
-5. `npm test` (spins up demo-core inside the surface integration test when needed)
-
-No secrets required for the current suite. Add `GEMINI_API_KEY` as a GitHub Actions secret only when CI gains live discovery checks.
-
-
-## Demo-core (Phase 11)
+> **Windows:** prefer `npx tsx` or `npm.cmd` with `--flag=value`.
 
 ```bash
-npm run demo:core
-```
-
-- URL: `http://127.0.0.1:4173`
-- Login: `teller` / `demo-pass`
-- Member `12345` → savings balance + sub-account confirmation flow
-- Member `67890` → permission denied
-- Unknown / empty ID → not found / validation
-- `/inject` → interstitial, session expiry, forced deny, slow delay
-
-See [`apps/demo-core/README.md`](./apps/demo-core/README.md).
-
-## Demo path (automation still stubbed)
-
-> **Windows / PowerShell note:** prefer `npm.cmd` or `npx tsx`. Use `--flag=value` form.
-
-```bash
+# terminal 1
 npm run demo:core
 
-npx tsx src/cli/index.ts discover --goal="Look up member 12345 and read savings balance" --target=http://127.0.0.1:4173
+# terminal 2 — deterministic replay (no Gemini)
+npx tsx src/cli/index.ts replay --artifact=capabilities/lookup-savings/1.0.0.json --input={"memberId":"12345"}
+
+# exceptional business outcome
+npx tsx src/cli/index.ts replay --artifact=capabilities/lookup-savings/1.0.0.json --input={"memberId":"NOPE"}
+
+# live discovery (requires GEMINI_API_KEY)
+npx tsx src/cli/index.ts discover --goal="Look up member 12345 and read savings balance" --target=http://127.0.0.1:4173/login
 ```
 
-## Running without live services
+Login for manual browsing: `teller` / `demo-pass`.
+
+## Running without live LLM
 
 ```bash
 npm run typecheck
 npm run demo:core
-npx tsx src/cli/index.ts --help
 npm test
+npx tsx src/cli/index.ts replay --artifact=capabilities/lookup-savings/1.0.0.json --input={"memberId":"12345"}
 ```
+
+## CI / CD
+
+[`.github/workflows/ci.yml`](./.github/workflows/ci.yml) — typecheck, build, test on `main` PRs/pushes. No Gemini secret required for the current suite.
 
 ## Status / cuts
 
 | Area | State |
 |---|---|
-| Repo layout + strict TS + env/logger redaction | **Done** |
-| `apps/demo-core` multi-step + injectable errors | **Done** |
-| `PlaywrightWebDriver` + multi-strategy locators | **Done** (Phase 2) |
-| CLI `discover` / `replay` / `hitl-mock` | **Stub** |
-| Policy allowlist / risk classes | **Not started** (Phase 3) |
-| Discovery agent / replay / HITL operator | **Stubs** |
-| `REPORT.md` | Partial (§4 surface seam filled) |
-| Real LLM discovery + deterministic replay | **Not started** |
-
-## Locked stack
-
-TypeScript + Zod · Playwright (a11y-first) · Gemini 2.5 Flash · local `demo-core` · single-process modular CLI
+| demo-core + SurfaceDriver + policy | **Done** |
+| Artifact schema + golden `lookup-savings` | **Done** |
+| Deterministic replay + NOT_FOUND outcome | **Done** |
+| Evidence writer | **Done** |
+| Gemini discovery loop | **Implemented** (needs API key for live evidence) |
+| HITL operator mock | **Stub** |
+| Submission `/evidence/` from a real discovery run | **Pending your API key run** |

@@ -8,6 +8,7 @@ const EnvSchema = z.object({
   GEMINI_MODEL: z.string().default("gemini-2.5-flash"),
   DEMO_CORE_ORIGIN: z.string().default("http://127.0.0.1:4173"),
   DEMO_CORE_PORT: z.coerce.number().int().positive().default(4173),
+  DEMO_CORE_PASSWORD: z.string().default("demo-pass"),
   LOG_LEVEL: z.string().default("info"),
 });
 
@@ -18,6 +19,11 @@ export type Env = z.infer<typeof EnvSchema>;
  * only the discover command should require it when invoked.
  */
 export const env: Env = EnvSchema.parse(process.env);
+
+// Ensure replay $env bindings see the default synthetic password.
+if (!process.env.DEMO_CORE_PASSWORD) {
+  process.env.DEMO_CORE_PASSWORD = env.DEMO_CORE_PASSWORD;
+}
 
 export function requireGeminiApiKey(): string {
   const key = env.GEMINI_API_KEY.trim();

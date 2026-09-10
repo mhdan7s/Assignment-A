@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "cap_lookup_savings_v1",
+  "name": "lookup-savings",
+  "description": "Log into demo-core, look up a member by ID, and extract the savings balance from the account detail pane.",
+  "capabilityVersion": "1.0.0",
+  "appFamily": "demo-core-banking",
+  "surfaceKind": "web",
+  "entry": {
+    "originAllowlist": ["http://127.0.0.1:4173"],
+    "startPath": "/login"
+  },
+  "inputs": {
+    "type": "object",
+    "properties": {
+      "memberId": {
+        "type": "string",
+        "description": "Member identifier to look up"
+      }
+    },
+    "required": ["memberId"],
+    "additionalProperties": false
+  },
+  "outputs": {
+    "type": "object",
+    "properties": {
+      "savingsBalance": {
+        "type": "string",
+        "description": "Savings balance text as shown in the UI"
+      }
+    },
+    "required": ["savingsBalance"],
+    "additionalProperties": false
+  },
+  "locators": {
+    "username": {
+      "id": "username",
+      "description": "Login username field",
+      "strategies": [
+        { "kind": "a11y", "role": "textbox", "name": "Username" },
+        { "kind": "label", "text": "Username" },
+        { "kind": "attribute", "attribute": "name", "value": "username" }
+      ]
+    },
+    "password": {
+      "id": "password",
+      "description": "Login password field",
+      "strategies": [
+        { "kind": "a11y", "role": "textbox", "name": "Password" },
+        { "kind": "label", "text": "Password" }
+      ]
+    },
+    "sign_in": {
+      "id": "sign_in",
+      "description": "Sign in button",
+      "strategies": [{ "kind": "a11y", "role": "button", "name": "Sign in" }]
+    },
+    "member_id": {
+      "id": "member_id",
+      "description": "Member ID search field",
+      "strategies": [
+        { "kind": "a11y", "role": "textbox", "name": "Member ID" },
+        { "kind": "label", "text": "Member ID" }
+      ]
+    },
+    "search": {
+      "id": "search",
+      "description": "Search members button",
+      "strategies": [{ "kind": "a11y", "role": "button", "name": "Search members" }]
+    },
+    "continue_notice": {
+      "id": "continue_notice",
+      "description": "Dismiss system notice",
+      "strategies": [{ "kind": "a11y", "role": "button", "name": "Continue" }]
+    },
+    "savings_balance": {
+      "id": "savings_balance",
+      "description": "Savings balance in iframe detail pane",
+      "strategies": [
+        {
+          "kind": "structural",
+          "css": "span[aria-label=\"Savings balance\"]",
+          "frame": { "title": "Account detail pane" }
+        },
+        {
+          "kind": "a11y",
+          "role": "generic",
+          "name": "Savings balance",
+          "frame": { "title": "Account detail pane" }
+        }
+      ]
+    }
+  },
+  "steps": [
+    {
+      "id": "type_username",
+      "op": "type",
+      "targetRef": "username",
+      "args": { "text": "teller" }
+    },
+    {
+      "id": "type_password",
+      "op": "type",
+      "targetRef": "password",
+      "args": { "text": { "$env": "DEMO_CORE_PASSWORD" } }
+    },
+    {
+      "id": "click_sign_in",
+      "op": "click",
+      "targetRef": "sign_in",
+      "postconditions": {
+        "description": "Land on member search home",
+        "urlPattern": "/home"
+      }
+    },
+    {
+      "id": "type_member_id",
+      "op": "type",
+      "targetRef": "member_id",
+      "args": { "text": { "$input": "memberId" } }
+    },
+    {
+      "id": "click_search",
+      "op": "click",
+      "targetRef": "search"
+    },
+    {
+      "id": "extract_savings",
+      "op": "extract",
+      "targetRef": "savings_balance",
+      "args": { "outputKey": "savingsBalance" }
+    }
+  ],
+  "success": {
+    "description": "Member detail with savings balance visible",
+    "urlPattern": "/members/",
+    "a11yIncludes": [{ "name": "Open new sub-account" }]
+  },
+  "knownOutcomes": [
+    {
+      "code": "NOT_FOUND",
+      "description": "No member matches the given ID",
+      "urlPattern": "/home",
+      "a11yIncludesAny": ["record not found", "no member matches"]
+    },
+    {
+      "code": "VALIDATION_ERROR",
+      "description": "Member ID was empty or invalid",
+      "urlPattern": "/home",
+      "a11yIncludesAny": ["member id is required", "validation error"]
+    },
+    {
+      "code": "PERMISSION_DENIED",
+      "description": "Not authorized to view this member",
+      "a11yIncludesAny": ["permission denied", "not authorized"]
+    }
+  ],
+  "recoveries": [
+    {
+      "id": "dismiss_system_notice",
+      "description": "Dismiss demo-core system notice interstitial",
+      "when": {
+        "urlPattern": "/interstitial",
+        "a11yIncludesAny": ["system notice"]
+      },
+      "then": [
+        {
+          "id": "click_continue",
+          "op": "click",
+          "targetRef": "continue_notice"
+        }
+      ]
+    }
+  ],
+  "policy": {
+    "riskLevel": "safe",
+    "requiresApproval": false,
+    "allowedActions": [
+      "navigate",
+      "click",
+      "type",
+      "select",
+      "press",
+      "extract",
+      "wait",
+      "dismiss_dialog",
+      "accept_dialog"
+    ],
+    "approvedForUnattended": true
+  },
+  "metadata": {
+    "createdAt": "2026-09-10T00:00:00.000Z",
+    "author": "phase5-golden",
+    "approvalState": "approved"
+  }
+}

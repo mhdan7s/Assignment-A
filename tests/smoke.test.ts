@@ -6,12 +6,11 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const cli = path.join(root, "src", "cli", "index.ts");
 
-function runCli(args: string[]) {
-  // Avoid `npx`/`npm run` flag swallowing on Windows/npm 10+.
+function runCli(args: string[], env?: NodeJS.ProcessEnv) {
   return spawnSync(process.execPath, ["--import", "tsx", cli, ...args], {
     cwd: root,
     encoding: "utf8",
-    env: process.env,
+    env: { ...process.env, ...env },
   });
 }
 
@@ -24,14 +23,17 @@ describe("CLI smoke", () => {
     expect(result.stdout).toContain("hitl-mock");
   });
 
-  it("discover stub exits 2 when args are provided", () => {
-    const result = runCli([
-      "discover",
-      "--goal",
-      "test goal",
-      "--target",
-      "http://127.0.0.1:4173",
-    ]);
-    expect(result.status).toBe(2);
+  it("discover without GEMINI_API_KEY exits non-zero", () => {
+    const result = runCli(
+      [
+        "discover",
+        "--goal",
+        "test goal",
+        "--target",
+        "http://127.0.0.1:4173",
+      ],
+      { GEMINI_API_KEY: "" },
+    );
+    expect(result.status).not.toBe(0);
   });
 });
