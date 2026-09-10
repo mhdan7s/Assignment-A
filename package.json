@@ -21,7 +21,8 @@
     "hitl:mock": "tsx src/cli/index.ts hitl-mock",
     "demo:core": "tsx apps/demo-core/server.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "ci": "npm run typecheck && npm run build && npm test"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

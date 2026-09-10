@@ -19,9 +19,11 @@ goal + target
 
 ## Prerequisites
 
-- Node.js **20+**
+- Node.js **20+** (this project is **TypeScript/Node only** — no Python runtime or `venv` is required)
 - Git
 - (Later) Gemini API key for live discovery; Playwright browsers for computer-use
+
+> If you ever add optional Python tooling locally, keep it in `.venv/` / `venv/` (already gitignored). Do not commit virtualenvs.
 
 ## Setup
 
@@ -50,6 +52,21 @@ npx playwright install chromium
 | `npm run replay` | Replay CLI (stub → exit 2 until Phase 6) |
 | `npm run hitl:mock` | HITL mock CLI (stub → exit 2 until Phase 9) |
 | `npm test` | Smoke + locator + surface↔demo-core tests |
+| `npm run ci` | Local parity with GitHub Actions (`typecheck` + `build` + `test`) |
+
+## CI / CD (GitHub Actions)
+
+Workflow: [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)
+
+Runs on pushes and PRs to `main` (and manual `workflow_dispatch`):
+
+1. `npm ci`
+2. Playwright Chromium install
+3. `npm run typecheck`
+4. `npm run build`
+5. `npm test` (spins up demo-core inside the surface integration test when needed)
+
+No secrets required for the current suite. Add `GEMINI_API_KEY` as a GitHub Actions secret only when CI gains live discovery checks.
 
 
 ## Demo-core (Phase 11)

@@ -103,3 +103,17 @@ apps/demo-core/node_modules/
 # Sourcemaps in publish output (if emitted locally)
 *.map
 !src/**/*.map
+
+# Python (not used by this project — ignored if a local venv appears)
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.Python
+pip-log.txt
